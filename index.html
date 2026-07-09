@@ -1,121 +1,442 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crynoix Launcher R</title>
-    <meta
-      name="description"
-      content="Download Crynoix Launcher R, read user reviews, and get support through Discord and YouTube."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="hero">
-      <nav class="nav container">
-        <a class="brand" href="#">Crynoix</a>
-        <div class="nav-links">
-          <a href="#download">Download</a>
-          <a href="#reviews">Reviews</a>
-          <a href="#support">Support</a>
-        </div>
-      </nav>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Crynoix Launcher — Minecraft Java on Android</title>
+<meta name="description" content="Crynoix Launcher runs Minecraft Java Edition on Android. Download the APK, read real player reviews, get support." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#12141a;
+    --surface:#1a1e26;
+    --surface-2:#20242e;
+    --border:#2a2f3b;
+    --text:#e9ebf1;
+    --text-dim:#9aa1b2;
+    --signal:#ff6a3d;
+    --signal-dim:#5c2c1c;
+    --mint:#3ddc97;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  .container{max-width:1120px;margin:0 auto;padding:0 24px;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;}
+  button{font-family:inherit;cursor:pointer;}
 
-      <div class="container hero-grid">
-        <div>
-          <p class="eyebrow">Fast. Simple. Community powered.</p>
-          <h1>Download Crynoix Launcher R</h1>
-          <p class="hero-copy">
-            Launch your favorite experience in seconds with a clean interface,
-            quick updates, and dependable support from the community.
-          </p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#download">Download Now</a>
-            <a class="btn btn-secondary" href="https://discord.com/invite/" target="_blank" rel="noreferrer">Join Discord</a>
-          </div>
-        </div>
+  /* isometric block-grid signature backdrop */
+  .block-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(30deg, var(--border) 1px, transparent 1px),
+      linear-gradient(150deg, var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 52px 90px, 52px 90px, 52px 90px;
+    opacity:0.35;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, black 40%, transparent 90%);
+  }
 
-        <div class="hero-card">
-          <h2>What you get</h2>
-          <ul>
-            <li>Quick installation and setup</li>
-            <li>Reliable updates and patches</li>
-            <li>Support from Discord and video guides</li>
-          </ul>
+  /* nav */
+  header.top{position:sticky; top:0; z-index:50; background:rgba(18,20,26,0.85); backdrop-filter:blur(10px); border-bottom:1px solid var(--border);}
+  .nav{display:flex; align-items:center; justify-content:space-between; height:64px;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem;}
+  .nav-links{display:flex; gap:28px; font-size:0.92rem; color:var(--text-dim);}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{display:flex; align-items:center; gap:14px;}
+  .burger{display:none; width:40px; height:40px; align-items:center; justify-content:center; background:none; border:1px solid var(--border); border-radius:10px; color:var(--text);}
+  .burger svg{width:18px; height:18px;}
+
+  .mobile-panel{
+    display:none; flex-direction:column; gap:2px;
+    border-bottom:1px solid var(--border); background:var(--surface);
+    overflow:hidden; max-height:0; transition:max-height 0.25s ease;
+  }
+  .mobile-panel.open{max-height:320px;}
+  .mobile-panel a, .mobile-panel .mp-cta{
+    padding:16px 24px; border-top:1px solid var(--border); font-size:0.95rem;
+  }
+  .mobile-panel .mp-cta{color:var(--signal); font-weight:600;}
+
+  /* buttons */
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 22px; border-radius:10px; font-weight:600; font-size:0.92rem; border:1px solid transparent; transition:transform 0.15s ease, background 0.15s ease;}
+  .btn:active{transform:scale(0.97);}
+  .btn-primary{background:var(--signal); color:#14100d;}
+  .btn-primary:hover{background:#ff8259;}
+  .btn-secondary{background:transparent; border-color:var(--border); color:var(--text);}
+  .btn-secondary:hover{border-color:#3a4150;}
+  .btn-block{width:100%; justify-content:center;}
+
+  /* hero */
+  .hero{position:relative; overflow:hidden; padding:72px 0 88px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--mint); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:14px;}
+  .hero-grid{position:relative; display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;}
+  h1.display{font-size:clamp(2.2rem, 4.4vw, 3.4rem); font-weight:700; line-height:1.06;}
+  h1.display span{color:var(--signal);}
+  .hero-copy{margin-top:18px; color:var(--text-dim); font-size:1.05rem; max-width:46ch;}
+  .hero-actions{display:flex; gap:14px; margin-top:30px; flex-wrap:wrap;}
+  .hero-meta{display:flex; gap:22px; margin-top:26px; font-size:0.82rem; color:var(--text-dim);}
+  .hero-meta strong{color:var(--text); font-family:'JetBrains Mono',monospace; display:block; font-size:1.15rem;}
+
+  /* phone mock */
+  .phone{
+    justify-self:center; width:250px; height:510px; border-radius:34px;
+    background:linear-gradient(160deg, var(--surface-2), var(--surface));
+    border:1px solid var(--border); padding:14px; position:relative;
+    box-shadow:0 30px 70px -30px rgba(0,0,0,0.7);
+  }
+  .phone::before{content:""; position:absolute; top:22px; left:50%; transform:translateX(-50%); width:60px; height:6px; border-radius:4px; background:#0d0f14;}
+  .phone-screen{width:100%; height:100%; border-radius:22px; background:#0d0f14; padding:20px 14px; display:flex; flex-direction:column; gap:10px;}
+  .ps-row{height:46px; border-radius:10px; background:var(--surface-2); display:flex; align-items:center; padding:0 12px; gap:10px; border:1px solid var(--border);}
+  .ps-dot{width:22px; height:22px; border-radius:6px; background:var(--mint); flex-shrink:0;}
+  .ps-line{height:8px; border-radius:4px; background:#2c313d; flex:1;}
+  .ps-tall{flex:1; border-radius:12px; background:linear-gradient(160deg, var(--signal-dim), #0d0f14); border:1px solid var(--border); margin-top:6px;}
+
+  /* sections */
+  section{padding:88px 0;}
+  .section-alt{background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
+  .section-heading{max-width:560px; margin-bottom:44px;}
+  .section-heading h2{font-size:clamp(1.6rem, 2.6vw, 2.1rem); margin-top:8px;}
+
+  .card-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:18px;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:26px;}
+  .card h3{font-size:1.05rem; margin-bottom:8px;}
+  .card p{color:var(--text-dim); font-size:0.92rem; margin-bottom:18px;}
+  .card .mono{font-size:0.78rem; color:var(--mint); display:block; margin-bottom:10px;}
+
+  .support-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:18px;}
+  .support-card{background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:26px; transition:border-color 0.15s ease;}
+  .support-card:hover{border-color:var(--signal);}
+  .support-card h3{font-size:1rem; margin-bottom:6px;}
+  .support-card p{color:var(--text-dim); font-size:0.88rem;}
+
+  /* reviews */
+  .rating-summary{display:flex; align-items:center; gap:22px; margin-bottom:34px; flex-wrap:wrap;}
+  .rating-big{font-family:'JetBrains Mono',monospace; font-size:2.6rem; font-weight:600;}
+  .stars{color:var(--signal); font-size:1.1rem; letter-spacing:2px;}
+  .rating-count{color:var(--text-dim); font-size:0.85rem;}
+
+  .review-form{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:40px;}
+  .review-form h3{font-size:1rem; margin-bottom:16px;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;}
+  input, textarea{
+    width:100%; background:var(--bg); border:1px solid var(--border); border-radius:9px;
+    padding:11px 13px; color:var(--text); font-family:inherit; font-size:0.9rem;
+  }
+  input:focus, textarea:focus{outline:2px solid var(--mint); outline-offset:1px; border-color:transparent;}
+  textarea{resize:vertical; min-height:80px; margin-bottom:12px;}
+  .star-picker{display:flex; gap:6px; margin-bottom:14px;}
+  .star-picker button{background:none; border:none; font-size:1.5rem; color:var(--border); line-height:1;}
+  .star-picker button.active{color:var(--signal);}
+  .form-status{font-size:0.85rem; margin-top:10px; min-height:1em;}
+  .form-status.ok{color:var(--mint);}
+  .form-status.err{color:var(--signal);}
+
+  .review-list{display:flex; flex-direction:column; gap:14px;}
+  .review-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px;}
+  .review-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px; flex-wrap:wrap;}
+  .review-name{font-weight:600; font-size:0.92rem;}
+  .review-date{color:var(--text-dim); font-size:0.78rem; font-family:'JetBrains Mono',monospace;}
+  .review-body{color:#c7cbd6; font-size:0.92rem;}
+  .review-stars{color:var(--signal); font-size:0.9rem; letter-spacing:1px;}
+  .empty-state{color:var(--text-dim); font-size:0.9rem; padding:20px 0;}
+
+  footer{padding:40px 0; border-top:1px solid var(--border); color:var(--text-dim); font-size:0.82rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+
+  @media (max-width:860px){
+    .nav-links, .nav-cta{display:none;}
+    .burger{display:flex;}
+    .mobile-panel{display:flex;}
+    .hero-grid{grid-template-columns:1fr; text-align:left;}
+    .phone{display:none;}
+    .card-grid, .support-grid{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+    section{padding:60px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <nav class="nav container">
+    <a class="brand" href="#">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <path d="M15 1 L28 8 V22 L15 29 L2 22 V8 Z" stroke="#ff6a3d" stroke-width="2" fill="#1a1e26"/>
+        <path d="M15 1 V15 M15 15 L28 8 M15 15 L2 8 M15 15 V29" stroke="#3ddc97" stroke-width="1.6"/>
+      </svg>
+      Crynoix
+    </a>
+    <div class="nav-links">
+      <a href="#download">Download</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#support">Support</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-primary" href="#download">Get the APK</a>
+    </div>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </nav>
+  <div class="mobile-panel" id="mobilePanel">
+    <a href="#download">Download</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#support">Support</a>
+    <a class="mp-cta" href="#download">Get the APK →</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="block-grid" aria-hidden="true"></div>
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">Minecraft Java Edition · Android</p>
+        <h1 class="display">Run real Java Edition, <span>on your phone.</span></h1>
+        <p class="hero-copy">Crynoix launches unmodified Minecraft Java on Android — mods, shaders, and your existing worlds included. No PC required.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#download">Download for Android</a>
+          <a class="btn btn-secondary" href="#reviews">See player reviews</a>
+        </div>
+        <div class="hero-meta">
+          <div><strong>1.8 – 1.21.x</strong>Supported versions</div>
+          <div><strong>Fabric</strong>Mod loader built in</div>
+          <div><strong>Free</strong>No account paywall</div>
         </div>
       </div>
-    </header>
-
-    <main>
-      <section id="download" class="section container">
-        <div class="section-heading">
-          <p class="eyebrow">Download</p>
-          <h2>Get the launcher in a few clicks</h2>
+      <div class="phone" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="ps-row"><div class="ps-dot"></div><div class="ps-line"></div></div>
+          <div class="ps-row"><div class="ps-dot"></div><div class="ps-line"></div></div>
+          <div class="ps-row"><div class="ps-dot"></div><div class="ps-line"></div></div>
+          <div class="ps-tall"></div>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="card-grid">
-          <article class="card">
-            <h3>Windows</h3>
-            <p>Optimized for quick access and smooth launches on desktop.</p>
-            <a class="btn btn-primary" href="#">Download for Windows</a>
-          </article>
+  <section id="download" class="section-alt">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Download</p>
+        <h2>Two minutes to your first world</h2>
+      </div>
+      <div class="card-grid">
+        <article class="card">
+          <span class="mono">v2.4.1 · ARM64</span>
+          <h3>Android APK</h3>
+          <p>Direct install, no Play Store account needed. Requires Android 8.0 or later.</p>
+          <a class="btn btn-primary btn-block" href="#">Download APK — 74 MB</a>
+        </article>
+        <article class="card">
+          <span class="mono">setup guide</span>
+          <h3>First launch checklist</h3>
+          <p>Import a Java account, point to your Fabric mods folder, and pick a render backend.</p>
+          <a class="btn btn-secondary btn-block" href="#support">Read the guide</a>
+        </article>
+      </div>
+    </div>
+  </section>
 
-          <article class="card">
-            <h3>Starter Pack</h3>
-            <p>Includes setup tips, community links, and access to support channels.</p>
-            <a class="btn btn-secondary" href="#support">Get Support</a>
-          </article>
+  <section id="reviews">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Reviews</p>
+        <h2>What players are saying</h2>
+      </div>
+
+      <div class="rating-summary" id="ratingSummary">
+        <span class="rating-big mono">—</span>
+        <div>
+          <div class="stars" id="summaryStars">☆☆☆☆☆</div>
+          <div class="rating-count" id="ratingCount">No reviews yet</div>
         </div>
-      </section>
+      </div>
 
-      <section id="reviews" class="section section-alt">
-        <div class="container">
-          <div class="section-heading">
-            <p class="eyebrow">Reviews</p>
-            <h2>Trusted by players who value simplicity</h2>
-          </div>
-
-          <div class="review-grid">
-            <article class="review-card">
-              <p>“Clean, fast, and easy to use. It feels polished from the first launch.”</p>
-              <strong>— Alex R.</strong>
-            </article>
-            <article class="review-card">
-              <p>“The support channel is responsive and the video guides are super helpful.”</p>
-              <strong>— Jamie K.</strong>
-            </article>
-            <article class="review-card">
-              <p>“I like how simple the download and setup experience is.”</p>
-              <strong>— Taylor M.</strong>
-            </article>
-          </div>
+      <form class="review-form" id="reviewForm">
+        <h3>Leave a review</h3>
+        <div class="form-row">
+          <input type="text" id="reviewName" placeholder="Your name" maxlength="40" required />
+          <input type="text" id="reviewDevice" placeholder="Device (optional, e.g. Pixel 8)" maxlength="40" />
         </div>
-      </section>
-
-      <section id="support" class="section container">
-        <div class="section-heading">
-          <p class="eyebrow">Support</p>
-          <h2>Need help? Reach the community</h2>
+        <div class="star-picker" id="starPicker" role="radiogroup" aria-label="Rating">
+          <button type="button" data-val="1">★</button>
+          <button type="button" data-val="2">★</button>
+          <button type="button" data-val="3">★</button>
+          <button type="button" data-val="4">★</button>
+          <button type="button" data-val="5">★</button>
         </div>
+        <textarea id="reviewText" placeholder="How's it running for you?" maxlength="400" required></textarea>
+        <button type="submit" class="btn btn-primary">Post review</button>
+        <div class="form-status" id="formStatus"></div>
+      </form>
 
-        <div class="support-grid">
-          <a class="support-card" href="https://discord.com/invite/" target="_blank" rel="noreferrer">
-            <h3>Discord Server</h3>
-            <p>Join live support, share feedback, and get help from the team.</p>
-          </a>
+      <div class="review-list" id="reviewList">
+        <p class="empty-state">Loading reviews…</p>
+      </div>
+    </div>
+  </section>
 
-          <a class="support-card" href="https://www.youtube.com/" target="_blank" rel="noreferrer">
-            <h3>YouTube Media</h3>
-            <p>Watch tutorials, feature updates, and launcher walkthroughs.</p>
-          </a>
+  <section id="support" class="section-alt">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Support</p>
+        <h2>Need a hand?</h2>
+      </div>
+      <div class="support-grid">
+        <a class="support-card" href="https://discord.com/invite/" target="_blank" rel="noreferrer">
+          <h3>Discord server</h3>
+          <p>Live help, bug reports, and mod recommendations from the community.</p>
+        </a>
+        <a class="support-card" href="https://www.youtube.com/" target="_blank" rel="noreferrer">
+          <h3>YouTube guides</h3>
+          <p>Setup walkthroughs, performance tuning, and update breakdowns.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="container">
+  <span>© 2026 Crynoix. Not affiliated with Mojang or Microsoft.</span>
+  <span class="mono">Minecraft Java Edition required</span>
+</footer>
+
+<script>
+  // mobile nav
+  const burger = document.getElementById('burgerBtn');
+  const panel = document.getElementById('mobilePanel');
+  burger.addEventListener('click', () => {
+    const open = panel.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  panel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    panel.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+  }));
+
+  // ---- Review system (persisted via window.storage, shared across visitors) ----
+  const STORAGE_PREFIX = 'crynoix-review:';
+  let selectedRating = 0;
+
+  const starPicker = document.getElementById('starPicker');
+  starPicker.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedRating = parseInt(btn.dataset.val, 10);
+      starPicker.querySelectorAll('button').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.val, 10) <= selectedRating);
+      });
+    });
+  });
+
+  function starString(n) {
+    const full = Math.round(n);
+    return '★★★★★☆☆☆☆☆'.slice(5 - full, 10 - full);
+  }
+
+  async function loadReviews() {
+    const listEl = document.getElementById('reviewList');
+    try {
+      const listing = await window.storage.list(STORAGE_PREFIX, true);
+      const keys = listing && listing.keys ? listing.keys : [];
+      if (keys.length === 0) {
+        listEl.innerHTML = '<p class="empty-state">No reviews yet — be the first to share how Crynoix runs for you.</p>';
+        updateSummary([]);
+        return;
+      }
+      const reviews = [];
+      for (const key of keys) {
+        try {
+          const res = await window.storage.get(key, true);
+          if (res && res.value) reviews.push(JSON.parse(res.value));
+        } catch (e) { /* skip unreadable entry */ }
+      }
+      reviews.sort((a, b) => b.ts - a.ts);
+      renderReviews(reviews);
+      updateSummary(reviews);
+    } catch (e) {
+      listEl.innerHTML = '<p class="empty-state">Couldn\'t load reviews right now. Try refreshing.</p>';
+    }
+  }
+
+  function renderReviews(reviews) {
+    const listEl = document.getElementById('reviewList');
+    if (reviews.length === 0) {
+      listEl.innerHTML = '<p class="empty-state">No reviews yet — be the first to share how Crynoix runs for you.</p>';
+      return;
+    }
+    listEl.innerHTML = reviews.map(r => `
+      <article class="review-card">
+        <div class="review-top">
+          <span class="review-name">${escapeHtml(r.name)}${r.device ? ' <span class="review-date">· ' + escapeHtml(r.device) + '</span>' : ''}</span>
+          <span class="review-date">${new Date(r.ts).toLocaleDateString()}</span>
         </div>
-      </section>
-    </main>
-  </body>
-</html>
+        <div class="review-stars">${starString(r.rating)}</div>
+        <p class="review-body">${escapeHtml(r.text)}</p>
+      </article>
+    `).join('');
+  }
+
+  function updateSummary(reviews) {
+    const big = document.querySelector('#ratingSummary .rating-big');
+    const stars = document.getElementById('summaryStars');
+    const count = document.getElementById('ratingCount');
+    if (reviews.length === 0) {
+      big.textContent = '—';
+      stars.textContent = '☆☆☆☆☆';
+      count.textContent = 'No reviews yet';
+      return;
+    }
+    const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+    big.textContent = avg.toFixed(1);
+    stars.textContent = starString(avg);
+    count.textContent = `${reviews.length} review${reviews.length === 1 ? '' : 's'}`;
+  }
+
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById('formStatus');
+    const name = document.getElementById('reviewName').value.trim();
+    const device = document.getElementById('reviewDevice').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+
+    if (!name || !text) {
+      statusEl.textContent = 'Please add your name and a review.';
+      statusEl.className = 'form-status err';
+      return;
+    }
+    if (selectedRating === 0) {
+      statusEl.textContent = 'Please pick a star rating.';
+      statusEl.className = 'form-status err';
+      return;
+    }
+
+    const entry = { name, device, text, rating: selectedRating, ts: Date.now() };
+    const key = STORAGE_PREFIX + entry.ts + '-' + Math.random().toString(36).slice(2, 8);
+
+    try {
+      const result = await window.storage.set(key, JSON.stringify(entry), true);
+      if (!result) throw new Error('write failed');
+      statusEl.textContent = 'Review posted — thanks!';
+      statusEl.className = 'form-status ok';
+      document.getElementById('reviewForm').reset();
+      selectedRating = 0;
+      starPicker.querySelectorAll('button').forEach(b => b.
